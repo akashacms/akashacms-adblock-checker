@@ -1,0 +1,19 @@
+{
+  "name": "akashacms-adblock-checker",
+  "version": "0.1.0",
+  "description": "AkashaCMS plugin to detect advertising blocked by adblocker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robogeek/akashacms-adblock-checker.git"
+  },
+  "author": "David Herron <david@davidherron.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robogeek/akashacms-adblock-checker/issues"
+  },
+  "homepage": "https://github.com/robogeek/akashacms-adblock-checker#readme"
+}

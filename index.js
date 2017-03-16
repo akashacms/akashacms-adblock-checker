@@ -22,12 +22,11 @@
 const url      = require('url');
 const path     = require('path');
 const util     = require('util');
-const co       = require('co');
 const akasha   = require('akasharender');
 const mahabhuta = require('mahabhuta');
 
-const log   = require('debug')('akasha:extlinks-plugin');
-const error = require('debug')('akasha:error-extlinks-plugin');
+const log   = require('debug')('akasha:adblock-checker-plugin');
+const error = require('debug')('akasha:error-adblock-checker-plugin');
 
 const pluginName = "akashacms-adblock-checker";
 
@@ -48,7 +47,7 @@ module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
     getCodeOnBlocked(config) { return config.pluginData(pluginName).codeOnBlocked; }
 };
 
-module.exports.mahabhuta = new mahabhuta.MahafuncArray("akashacms-adblock-checker", {});
+module.exports.mahabhuta = new mahabhuta.MahafuncArray(pluginName, {});
 
 class AdblockCheckerElement extends mahabhuta.CustomElement {
     get elementName() { return "adblock-checker"; }
