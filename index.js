@@ -54,11 +54,14 @@ class AdblockCheckerElement extends mahabhuta.CustomElement {
     process($element, metadata, dirty) {
         const pluginData = metadata.config.pluginData(pluginName);
         var adblockSelector = pluginData.selector;
-        var adblockCodeOnBlocked = pluginData.codeOnBlocked;
-        var elementSelector = $(element).attr('selector');
+        var adblockCodeOnBlocked = pluginData.codeOnBlocked
+            .replace(/(\r\n|\n|\r)/gm,"")
+            .replace(/"/gm, '\\"');
+        var elementSelector = $element.attr('selector');
         if (elementSelector) {
             adblockSelector = elementSelector;
         }
+        // console.log(`${pluginName} ${adblockSelector} ${adblockCodeOnBlocked}`);
         return akasha.partial(metadata.config, "adblock-checker.html.ejs", {
             adblockSelector, adblockCodeOnBlocked
         });
