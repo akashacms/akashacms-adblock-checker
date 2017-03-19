@@ -4,7 +4,8 @@
   "description": "Guide book for Adblock Checker",
   "main": "config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prebuild": "rm -rf out/* && mkdir -p out && akasharender copy-assets config.js",
+    "build": "akasharender render config.js",
   },
   "author": "David Herron <david@davidherron.com>",
   "license": "ISC",
