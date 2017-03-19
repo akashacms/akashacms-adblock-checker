@@ -5,7 +5,7 @@
   "main": "config.js",
   "scripts": {
     "prebuild": "rm -rf out/* && mkdir -p out && akasharender copy-assets config.js",
-    "build": "akasharender render config.js",
+    "build": "akasharender render config.js"
   },
   "author": "David Herron <david@davidherron.com>",
   "license": "ISC",
