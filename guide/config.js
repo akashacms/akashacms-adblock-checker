@@ -39,7 +39,7 @@ config
     .use(require('akashacms-booknav'));
     // .use(require('epub-website'));
 
-config.plugin("akashacms-base").generateSitemap(true);
+config.plugin("akashacms-base").generateSitemap(config, true);
 
 config
     .addFooterJavaScript({ href: "/vendor/jquery/jquery.min.js" })

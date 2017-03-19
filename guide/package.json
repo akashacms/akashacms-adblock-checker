@@ -10,7 +10,7 @@
   "author": "David Herron <david@davidherron.com>",
   "license": "ISC",
   "dependencies": {
-    "akasharender": "^0.5.15",
+    "akasharender": ">=0.5.15",
     "bootstrap": "^3.3.7",
     "jquery": "^3.2.0",
     "mahabhuta": "^0.6.3",
