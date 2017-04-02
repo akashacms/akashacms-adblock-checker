@@ -2,8 +2,6 @@
 
 const util    = require('util');
 const akasha  = require('akasharender');
-const async   = require('async');
-// const cheerio = require('cheerio');
 const path    = require('path');
 
 const log    = require('debug')('akasharender-docs:configuration');
@@ -53,8 +51,6 @@ config.setMahabhutaConfig({
     recognizeCDATA: true,
     xmlMode: false
 });
-
-// config.addMahabhuta(require('../../ebooks/book-range-confidence/mahafuncs'));
 
 config.prepare();
 module.exports = config;
