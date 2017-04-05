@@ -1,5 +1,5 @@
 ---
-layout: ebook-page.html.ejs
+layout: plugin-documentation.html.ejs
 title: AskashaCMS Adblock Checker documentation
 ---
 
