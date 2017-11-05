@@ -23,7 +23,7 @@ const url      = require('url');
 const path     = require('path');
 const util     = require('util');
 const akasha   = require('akasharender');
-const mahabhuta = require('mahabhuta');
+const mahabhuta = akasha.mahabhuta;
 
 const log   = require('debug')('akasha:adblock-checker-plugin');
 const error = require('debug')('akasha:error-adblock-checker-plugin');
