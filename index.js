@@ -44,7 +44,7 @@ module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
 
     // These are moot.  The documentation for them no longer eists.
     // Maybe there is still code using these two functions.
-    
+
     useSelector(config, selector) { this.options.selector = selector; }
     getSelector(config) { return this.options.selector; }
 
@@ -58,9 +58,7 @@ class AdblockCheckerElement extends mahabhuta.CustomElement {
     get elementName() { return "adblock-checker"; }
     process($element, metadata, dirty) {
         const thisPlugin = metadata.config.plugin(pluginName);
-        // const pluginData = metadata.config.pluginData(pluginName);
-        var adblockSelector = thisPlugin.selector;
-        var adblockCodeOnBlocked = thisPlugin.codeOnBlocked
+        var adblockCodeOnBlocked = thisPlugin.options.codeOnBlocked
             .replace(/(\r\n|\n|\r)/gm,"")
             .replace(/"/gm, '\\"');
         var elementSelector = $element.attr('selector');
@@ -69,7 +67,7 @@ class AdblockCheckerElement extends mahabhuta.CustomElement {
         }
         // console.log(`${pluginName} ${adblockSelector} ${adblockCodeOnBlocked}`);
         return akasha.partial(metadata.config, "adblock-checker.html.ejs", {
-            adblockSelector, adblockCodeOnBlocked
+            adblockSelector: thisPlugin.options.selector, adblockCodeOnBlocked
         });
 	}
 }
