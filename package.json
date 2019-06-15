@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robogeek/akashacms-adblock-checker.git"
+    "url": "git+https://github.com/akashacms/akashacms-adblock-checker.git"
   },
   "author": "David Herron <david@davidherron.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/robogeek/akashacms-adblock-checker/issues"
+    "url": "https://github.com/akashacms/akashacms-adblock-checker/issues"
   },
-  "homepage": "https://github.com/robogeek/akashacms-adblock-checker"
+  "homepage": "https://github.com/akashacms/akashacms-adblock-checker"
 }

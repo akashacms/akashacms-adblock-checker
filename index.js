@@ -35,16 +35,21 @@ module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
         super(pluginName);
     }
 
-    configure(config) {
+    configure(config, options) {
+        this._config = config;
+        this.options = !options ? {} : options;
         config.addPartialsDir(path.join(__dirname, 'partials'));
         config.addMahabhuta(module.exports.mahabhuta);
     }
 
-    useSelector(config, selector) { config.pluginData(pluginName).selector = selector; }
-    getSelector(config) { return config.pluginData(pluginName).selector; }
+    // These are moot.  The documentation for them no longer eists.
+    // Maybe there is still code using these two functions.
+    
+    useSelector(config, selector) { this.options.selector = selector; }
+    getSelector(config) { return this.options.selector; }
 
-    useCodeOnBlocked(config, code) { config.pluginData(pluginName).codeOnBlocked = code; }
-    getCodeOnBlocked(config) { return config.pluginData(pluginName).codeOnBlocked; }
+    useCodeOnBlocked(config, code) { this.options.codeOnBlocked = code; }
+    getCodeOnBlocked(config) { return this.options.codeOnBlocked; }
 };
 
 module.exports.mahabhuta = new mahabhuta.MahafuncArray(pluginName, {});
@@ -52,9 +57,10 @@ module.exports.mahabhuta = new mahabhuta.MahafuncArray(pluginName, {});
 class AdblockCheckerElement extends mahabhuta.CustomElement {
     get elementName() { return "adblock-checker"; }
     process($element, metadata, dirty) {
-        const pluginData = metadata.config.pluginData(pluginName);
-        var adblockSelector = pluginData.selector;
-        var adblockCodeOnBlocked = pluginData.codeOnBlocked
+        const thisPlugin = metadata.config.plugin(pluginName);
+        // const pluginData = metadata.config.pluginData(pluginName);
+        var adblockSelector = thisPlugin.selector;
+        var adblockCodeOnBlocked = thisPlugin.codeOnBlocked
             .replace(/(\r\n|\n|\r)/gm,"")
             .replace(/"/gm, '\\"');
         var elementSelector = $element.attr('selector');

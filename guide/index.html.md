@@ -43,17 +43,17 @@ This custom tag invokes the partial named below, passing in the data given in th
 In `config.js` for the website:
 
 ```
-config.use(require('akashacms-adblock-checker'));
-
-config.plugin('akashacms-adblock-checker').useSelector(config, '.advert');
-config.plugin('akashacms-adblock-checker').useCodeOnBlocked(config, `
-    HTML of message to display to user
-    `);
+config.use(require('akashacms-adblock-checker'), {
+        selector: '\".advert\"',
+        codeOnBlocked: `
+        HTML of message to display to user
+        `
+});
 ```
 
-The string passed in `useSelector` is a jQuery selector to match a wrapper `div` you add to your advertising blocks.  See the next section for a discussion.
+The string passed in `selector` is a jQuery selector to match a wrapper `div` you add to your advertising blocks.  See the next section for a discussion.
 
-The string passed in `useCodeOnBlocked` is HTML that is to be displayed to the user.  By using a back-quote string (what ES-2015 calls a Template String) the string can include newlines for readability.  Those newlines will be removed before passing to the partial, however.
+The string passed in `codeOnBlocked` is HTML that is to be displayed to the user.  By using a back-quote string (what ES-2015 calls a Template String) the string can include newlines for readability.  Those newlines will be removed before passing to the partial, however.
 
 # Ad-Block Detection methodology
 
