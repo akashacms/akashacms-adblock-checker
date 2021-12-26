@@ -7,7 +7,7 @@ Understandably many people run an Advertising Blocking extension in their web br
 
 Of course it's useful if our advertising efforts do not cause an excessively bad experience for our customers.  That our customers resort to running an ad blocker is a symptom of over-the-top advertising techniques.  It is your choice whether to follow that recommendation, or not.
 
-The point of the `akashacms-adblock-checker` plugin is two-fold:
+The point of the `@akashacms/plugins-adblock-checker` plugin is two-fold:
 
 * Detect whether an advertisement has been blocked
 * Display a message to the reader
@@ -16,10 +16,10 @@ The point of the `akashacms-adblock-checker` plugin is two-fold:
 
 With an AkashaCMS website setup, add the following to `package.json`
 
-```
+```json
   "dependencies": {
     ...
-    "akashacms-adblock-checker": "akashacms/akashacms-adblock-checker"
+    "@akashacms/plugins-adblock-checker": "^0.8.x"
     ...
   }
 ```
@@ -32,7 +32,7 @@ Once added to `package.json` run: `npm install`
 
 To enable the Adblock-Checker on a given page layout, add the following custom tag:
 
-```
+```html
 <adblock-checker></adblock-checker>
 ```
 
@@ -42,8 +42,8 @@ This custom tag invokes the partial named below, passing in the data given in th
 
 In `config.js` for the website:
 
-```
-config.use(require('akashacms-adblock-checker'), {
+```js
+config.use(require('@akashacms/plugins-adblock-checker'), {
         selector: '\".advert\"',
         codeOnBlocked: `
         HTML of message to display to user
@@ -65,7 +65,7 @@ Therefore, if one wraps the advertisement with a `div`, that `div` will be empty
 
 Consider:
 
-```
+```html
 <div class="advert">
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <ins class="adsbygoogle"
@@ -83,14 +83,14 @@ This is a typical advertising snippet from Adsense.  Clearly an adblocker knows 
 
 In such a case the HTML effectively becomes:
 
-```
+```html
 <div class="advert">
 </div>
 ```
 
 In such a case, this jQuery expression will be true:
 
-```
+```js
 if ($(selector).height() === 0) { ... }
 ```
 

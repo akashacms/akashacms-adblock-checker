@@ -1,9 +1,10 @@
 {
-  "name": "akashacms-adblock-checker",
-  "version": "0.7.0",
+  "name": "@akashacms/plugins-adblock-checker",
+  "version": "0.8.0",
   "description": "AkashaCMS plugin to detect advertising blocked by adblocker",
   "main": "index.js",
   "scripts": {
+    "dopublish": "npm publish --access public"
   },
   "repository": {
     "type": "git",

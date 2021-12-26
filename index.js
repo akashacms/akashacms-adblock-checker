@@ -28,7 +28,7 @@ const mahabhuta = akasha.mahabhuta;
 const _plugin_config = Symbol('config');
 const _plugin_options = Symbol('options');
 
-const pluginName = "akashacms-adblock-checker";
+const pluginName = "@akashacms/plugins-adblock-checker";
 
 module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
     constructor() {
