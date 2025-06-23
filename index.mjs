@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 David Herron
+ * Copyright 2017-2025 David Herron
  *
  * This file is part of AkashaCMS-extlinks (http://akashacms.com/).
  *
@@ -17,20 +17,21 @@
  *  limitations under the License.
  */
 
-'use strict';
-
-const path     = require('path');
-const util     = require('util');
-const akasha   = require('akasharender');
-const { Configuration, CustomElement, Munger, PageProcessor } = require('akasharender');
+import path from 'node:path';
+// const util     = require('node:util');
+import akasha, {
+    Configuration,
+    CustomElement,
+    Munger,
+    PageProcessor
+} from 'akasharender';
 const mahabhuta = akasha.mahabhuta;
 
-const _plugin_config = Symbol('config');
-const _plugin_options = Symbol('options');
+const __dirname = import.meta.dirname;
 
 const pluginName = "@akashacms/plugins-adblock-checker";
 
-module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
+export class AdblockCheckerPlugin extends akasha.Plugin {
     constructor() {
         super(pluginName);
     }
@@ -43,7 +44,7 @@ module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
         this.options = options ? options : {};
         options.config = config;
         config.addPartialsDir(path.join(__dirname, 'partials'));
-        config.addMahabhuta(module.exports.mahabhutaArray(options, config, this.akasha, this));
+        config.addMahabhuta(mahabhutaArray(options, config, this.akasha, this));
     }
 
     get config() { return this.#config; }
@@ -59,7 +60,7 @@ module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
 };
 
 
-module.exports.mahabhutaArray = function(
+export function mahabhutaArray(
             options,
             config, // ?: Configuration,
             akasha, // ?: any,
