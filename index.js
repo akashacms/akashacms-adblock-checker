@@ -19,10 +19,10 @@
 
 'use strict';
 
-const url      = require('url');
 const path     = require('path');
 const util     = require('util');
 const akasha   = require('akasharender');
+const { Configuration, CustomElement, Munger, PageProcessor } = require('akasharender');
 const mahabhuta = akasha.mahabhuta;
 
 const _plugin_config = Symbol('config');
@@ -35,16 +35,18 @@ module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
         super(pluginName);
     }
 
+    #config;
+
     configure(config, options) {
-        this[_plugin_config] = config;
-        this[_plugin_options] = options;
+        this.#config = config;
+        this.akasha = config.akasha;
+        this.options = options ? options : {};
         options.config = config;
         config.addPartialsDir(path.join(__dirname, 'partials'));
-        config.addMahabhuta(module.exports.mahabhutaArray(options));
+        config.addMahabhuta(module.exports.mahabhutaArray(options, config, this.akasha, this));
     }
 
-    get config() { return this[_plugin_config]; }
-    get options() { return this[_plugin_options]; }
+    get config() { return this.#config; }
 
     // These are moot.  The documentation for them no longer eists.
     // Maybe there is still code using these two functions.
@@ -57,13 +59,18 @@ module.exports = class AdblockCheckerPlugin extends akasha.Plugin {
 };
 
 
-module.exports.mahabhutaArray = function(options) {
+module.exports.mahabhutaArray = function(
+            options,
+            config, // ?: Configuration,
+            akasha, // ?: any,
+            plugin  // ?: Plugin
+) {
     let ret = new mahabhuta.MahafuncArray(pluginName, options);
-    ret.addMahafunc(new AdblockCheckerElement());
+    ret.addMahafunc(new AdblockCheckerElement(config, akasha, plugin));
     return ret;
 };
 
-class AdblockCheckerElement extends mahabhuta.CustomElement {
+class AdblockCheckerElement extends CustomElement {
     get elementName() { return "adblock-checker"; }
     process($element, metadata, dirty) {
         var adblockCodeOnBlocked = this.array.options.codeOnBlocked
@@ -74,7 +81,7 @@ class AdblockCheckerElement extends mahabhuta.CustomElement {
             adblockSelector = elementSelector;
         }
         // console.log(`${pluginName} ${adblockSelector} ${adblockCodeOnBlocked}`);
-        return akasha.partial(this.array.options.config, "adblock-checker.html.ejs", {
+        return this.akasha.partial(this.config, "adblock-checker.html.ejs", {
             adblockSelector: this.array.options.selector,
             adblockCodeOnBlocked
         });
