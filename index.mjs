@@ -18,12 +18,9 @@
  */
 
 import path from 'node:path';
-// const util     = require('node:util');
 import akasha, {
-    Configuration,
     CustomElement,
-    Munger,
-    PageProcessor
+    Munger
 } from 'akasharender';
 const mahabhuta = akasha.mahabhuta;
 
@@ -49,14 +46,6 @@ export class AdblockCheckerPlugin extends akasha.Plugin {
 
     get config() { return this.#config; }
 
-    // These are moot.  The documentation for them no longer eists.
-    // Maybe there is still code using these two functions.
-
-    useSelector(config, selector) { this.options.selector = selector; }
-    getSelector(config) { return this.options.selector; }
-
-    useCodeOnBlocked(config, code) { this.options.codeOnBlocked = code; }
-    getCodeOnBlocked(config) { return this.options.codeOnBlocked; }
 };
 
 
@@ -67,23 +56,47 @@ export function mahabhutaArray(
             plugin  // ?: Plugin
 ) {
     let ret = new mahabhuta.MahafuncArray(pluginName, options);
-    ret.addMahafunc(new AdblockCheckerElement(config, akasha, plugin));
+
+    ret.addFinalMahafunc(new AdblockCheckerMunger(config, akasha, plugin));
+
+    // ret.addMahafunc(new AdblockCheckerElement(config, akasha, plugin));
     return ret;
 };
+
+// This only inserts the adblock checker for pages
+// that have an element matching the advert selector
+class AdblockCheckerMunger extends Munger {
+    get selector() { return `html body ${this.array.options.selector}`; }
+    get elementName() { return `html body ${this.array.options.selector}`; }
+    async process($, $element, metadata, setDirty, done) {
+        // console.log($element);
+        let adblockCodeOnBlocked = this.array.options.codeOnBlocked
+            .replace(/(\r\n|\n|\r)/gm,"")
+            .replace(/"/gm, '\\"');
+        return this.akasha.partial(this.config, "adblock-checker.html.ejs", {
+            adblockSelector: this.array.options.selector,
+            adblockCodeOnBlocked
+        });
+        return '';
+    }
+}
+
 
 class AdblockCheckerElement extends CustomElement {
     get elementName() { return "adblock-checker"; }
     process($element, metadata, dirty) {
-        var adblockCodeOnBlocked = this.array.options.codeOnBlocked
+        let adblockCodeOnBlocked = this.array.options.codeOnBlocked
             .replace(/(\r\n|\n|\r)/gm,"")
             .replace(/"/gm, '\\"');
-        var elementSelector = $element.attr('selector');
+        let elementSelector = $element.attr('selector');
         if (elementSelector) {
             adblockSelector = elementSelector;
+        } else {
+            adblockSelector =  this.array.options.selector;
         }
         // console.log(`${pluginName} ${adblockSelector} ${adblockCodeOnBlocked}`);
         return this.akasha.partial(this.config, "adblock-checker.html.ejs", {
-            adblockSelector: this.array.options.selector,
+            adblockSelector: adblockSelector,
             adblockCodeOnBlocked
         });
 	}
