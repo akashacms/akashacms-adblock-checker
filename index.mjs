@@ -40,64 +40,49 @@ export class AdblockCheckerPlugin extends akasha.Plugin {
         this.akasha = config.akasha;
         this.options = options ? options : {};
         options.config = config;
-        config.addPartialsDir(path.join(__dirname, 'partials'));
-        config.addMahabhuta(mahabhutaArray(options, config, this.akasha, this));
+        config.addAssetsDir(path.join(__dirname, 'assets'));
+        config.addFooterJavaScript({
+            href: '/vendor/@akashacms/plugins-adblock-checker/adblock-checker.js'
+        });
+        const s = this.generateCheckerScript();
+        if (typeof s === 'string') {
+            config.addFooterJavaScript({
+                script: s
+            });
+        }
+
     }
 
     get config() { return this.#config; }
 
-};
-
-
-export function mahabhutaArray(
-            options,
-            config, // ?: Configuration,
-            akasha, // ?: any,
-            plugin  // ?: Plugin
-) {
-    let ret = new mahabhuta.MahafuncArray(pluginName, options);
-
-    ret.addFinalMahafunc(new AdblockCheckerMunger(config, akasha, plugin));
-
-    // ret.addMahafunc(new AdblockCheckerElement(config, akasha, plugin));
-    return ret;
-};
-
-// This only inserts the adblock checker for pages
-// that have an element matching the advert selector
-class AdblockCheckerMunger extends Munger {
-    get selector() { return `html body ${this.array.options.selector}`; }
-    get elementName() { return `html body ${this.array.options.selector}`; }
-    async process($, $element, metadata, setDirty, done) {
-        // console.log($element);
-        let adblockCodeOnBlocked = this.array.options.codeOnBlocked
-            .replace(/(\r\n|\n|\r)/gm,"")
-            .replace(/"/gm, '\\"');
-        return this.akasha.partial(this.config, "adblock-checker.html.ejs", {
-            adblockSelector: this.array.options.selector,
-            adblockCodeOnBlocked
-        });
-        return '';
+    // Generates in-line JavaScript to invoke the akAdblockChecker
+    // with appropriate arguments.
+    //
+    // Base64 is used for the codeOnBlocked because it is
+    // otherwise encoded with HTML entities that would be
+    // difficult to decode.  Base64 is easy to decode using
+    // built-in functions in JavaScript.
+    //
+    // The codeOnBlocked value comes from the Configuration.
+    // It is converted into Base64 and supplied to akAdblockChecker
+    // In akAdblockChecker it is decoded and, if appropriate,
+    // is used to replace any empty advert block.
+    generateCheckerScript() {
+        let adblockSelector =  this.options.selector;
+        // console.log(`generateChecker`, this?.options?.codeOnBlocked);
+        let adblockCodeOnBlocked = btoa(this?.options?.codeOnBlocked 
+            ? this.options.codeOnBlocked 
+            : undefined);
+        return  typeof adblockCodeOnBlocked === 'string'
+            ? `
+            window.onload = function() {
+                setTimeout(function() {
+                    akAdblockChecker("${adblockSelector}", \`
+                        ${adblockCodeOnBlocked}
+                    \`);
+                });
+            };
+            `
+            : undefined;
     }
-}
-
-
-class AdblockCheckerElement extends CustomElement {
-    get elementName() { return "adblock-checker"; }
-    process($element, metadata, dirty) {
-        let adblockCodeOnBlocked = this.array.options.codeOnBlocked
-            .replace(/(\r\n|\n|\r)/gm,"")
-            .replace(/"/gm, '\\"');
-        let elementSelector = $element.attr('selector');
-        if (elementSelector) {
-            adblockSelector = elementSelector;
-        } else {
-            adblockSelector =  this.array.options.selector;
-        }
-        // console.log(`${pluginName} ${adblockSelector} ${adblockCodeOnBlocked}`);
-        return this.akasha.partial(this.config, "adblock-checker.html.ejs", {
-            adblockSelector: adblockSelector,
-            adblockCodeOnBlocked
-        });
-	}
-}
+};
